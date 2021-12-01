@@ -68,7 +68,7 @@ public class DefaultMapJsonSerializerTest extends TestCase {
   
 
 	/**
-	 * Unit test for Multimap serialization 
+	 * Unit tests for Multimap serialization 
 	 * @link https://github.com/google/guava/wiki/NewCollectionTypesExplained#multimap
 	 * This is for the functionality of https://github.com/google/gson/issues/1847
 	 * 
@@ -101,8 +101,37 @@ public class DefaultMapJsonSerializerTest extends TestCase {
     Gson gson = new Gson();
     JsonElement element = gson.toJsonTree(myMap, mapType);
 
+    //Verify that we get a JSON object with our key
     assertTrue(element.isJsonObject());
     JsonObject mapJsonObject = element.getAsJsonObject();
     assertTrue(mapJsonObject.has(key));
+    
+    //Confirm functionality matches a map
+    JsonElement elementAsMap = gson.toJsonTree(myMap.asMap(), myMap.asMap().getClass());
+    assertEquals(element, elementAsMap);
+  }
+  
+
+  public void testDupKeyMultiMapSerialization() {
+    Type mapType = new TypeToken<ArrayListMultimap<String, String>>() { }.getType();
+    Multimap<String, String> myMap =  ArrayListMultimap.create();
+    String key1 = "key1";
+    String key2 = "key2";
+    myMap.put(key1, "value1");
+    myMap.put(key1,  "value2");
+    myMap.put(key1,  "value3");
+    myMap.put(key2,  "valueA");
+    Gson gson = new Gson();
+    JsonElement element = gson.toJsonTree(myMap, mapType);
+
+    //Verify that we get a JSON object with our key
+    assertTrue(element.isJsonObject());
+    JsonObject mapJsonObject = element.getAsJsonObject();
+    assertTrue(mapJsonObject.has(key1));
+    assertTrue(mapJsonObject.has(key2));
+    
+    //Confirm functionality matches a map
+    JsonElement elementAsMap = gson.toJsonTree(myMap.asMap(), myMap.asMap().getClass());
+    assertEquals(element, elementAsMap);
   }
 }
