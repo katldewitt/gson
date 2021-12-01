@@ -16,11 +16,15 @@
 
 package com.google.gson;
 
-import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.reflect.TypeToken;
+
 import junit.framework.TestCase;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.ArrayListMultimap;
 
 /**
  * Unit test for the default JSON map serialization object located in the
@@ -52,6 +56,46 @@ public class DefaultMapJsonSerializerTest extends TestCase {
   public void testNonEmptyMapSerialization() {
     Type mapType = new TypeToken<Map<String, String>>() { }.getType();
     Map<String, String> myMap = new HashMap<String, String>();
+    String key = "key1";
+    myMap.put(key, "value1");
+    Gson gson = new Gson();
+    JsonElement element = gson.toJsonTree(myMap, mapType);
+
+    assertTrue(element.isJsonObject());
+    JsonObject mapJsonObject = element.getAsJsonObject();
+    assertTrue(mapJsonObject.has(key));
+  }
+  
+
+	/**
+	 * Unit test for Multimap serialization 
+	 * @link https://github.com/google/guava/wiki/NewCollectionTypesExplained#multimap
+	 * This is for the functionality of https://github.com/google/gson/issues/1847
+	 * 
+	 * @author Kathryn_DeWitt 
+	 * CS427
+	 */
+  public void testEmptyMultiMapNoTypeSerialization() {
+    Multimap<String, String> emptyMap = ArrayListMultimap.create();
+    JsonElement element = gson.toJsonTree(emptyMap, emptyMap.getClass());
+    assertTrue(element instanceof JsonObject);
+    JsonObject emptyMapJsonObject = (JsonObject) element;
+    assertTrue(emptyMapJsonObject.entrySet().isEmpty());
+  }
+
+  public void testEmptyMultiMapSerialization() {
+    Type mapType = new TypeToken<ArrayListMultimap<String, String>>() { }.getType();
+    Multimap<String, String> emptyMap =  ArrayListMultimap.create();
+    JsonElement element = gson.toJsonTree(emptyMap, mapType);
+
+    assertTrue(element instanceof JsonObject);
+    JsonObject emptyMapJsonObject = (JsonObject) element;
+    assertTrue(emptyMapJsonObject.entrySet().isEmpty());
+  }
+
+  public void testNonEmptyMultiMapSerialization() {
+    Type mapType = new TypeToken<ArrayListMultimap<String, String>>() { }.getType();
+    Multimap<String, String> myMap =  ArrayListMultimap.create();
     String key = "key1";
     myMap.put(key, "value1");
     Gson gson = new Gson();
