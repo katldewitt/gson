@@ -60,10 +60,11 @@ public class DefaultMapJsonSerializerTest extends TestCase {
     myMap.put(key, "value1");
     Gson gson = new Gson();
     JsonElement element = gson.toJsonTree(myMap, mapType);
+    assertNotNull("Element is null", element);
 
-    assertTrue(element.isJsonObject());
+    assertTrue("Object is NOT a JsonObject", element.isJsonObject());
     JsonObject mapJsonObject = element.getAsJsonObject();
-    assertTrue(mapJsonObject.has(key));
+    assertTrue("Object doesn't have key", mapJsonObject.has(key));
   }
   
 
@@ -87,7 +88,8 @@ public class DefaultMapJsonSerializerTest extends TestCase {
     Type mapType = new TypeToken<ArrayListMultimap<String, String>>() { }.getType();
     Multimap<String, String> emptyMap =  ArrayListMultimap.create();
     JsonElement element = gson.toJsonTree(emptyMap, mapType);
-
+    assertNotNull("Element is null", element);
+    
     assertTrue(element instanceof JsonObject);
     JsonObject emptyMapJsonObject = (JsonObject) element;
     assertTrue(emptyMapJsonObject.entrySet().isEmpty());
@@ -100,15 +102,16 @@ public class DefaultMapJsonSerializerTest extends TestCase {
     myMap.put(key, "value1");
     Gson gson = new Gson();
     JsonElement element = gson.toJsonTree(myMap, mapType);
-
+    assertNotNull("Element is null!", element );
+    
     //Verify that we get a JSON object with our key
-    assertTrue(element.isJsonObject());
+    assertTrue("element is not JSONObject", element.isJsonObject());
     JsonObject mapJsonObject = element.getAsJsonObject();
-    assertTrue(mapJsonObject.has(key));
+    assertTrue("object doesn't have a key", mapJsonObject.has(key));
     
     //Confirm functionality matches a map
     JsonElement elementAsMap = gson.toJsonTree(myMap.asMap(), myMap.asMap().getClass());
-    assertEquals(element, elementAsMap);
+    assertEquals("Multimap JsonElement doesn't match Map JsonElement", element, elementAsMap);
   }
   
 
@@ -123,15 +126,16 @@ public class DefaultMapJsonSerializerTest extends TestCase {
     myMap.put(key2,  "valueA");
     Gson gson = new Gson();
     JsonElement element = gson.toJsonTree(myMap, mapType);
+    assertNotNull("Element is null!", element );
 
     //Verify that we get a JSON object with our key
-    assertTrue(element.isJsonObject());
+    assertTrue("element is not JSONObject", element.isJsonObject());
     JsonObject mapJsonObject = element.getAsJsonObject();
-    assertTrue(mapJsonObject.has(key1));
-    assertTrue(mapJsonObject.has(key2));
+    assertTrue("object doesn't have a key1", mapJsonObject.has(key1));
+    assertTrue("object doesn't have a key2", mapJsonObject.has(key2));
     
     //Confirm functionality matches a map
     JsonElement elementAsMap = gson.toJsonTree(myMap.asMap(), myMap.asMap().getClass());
-    assertEquals(element, elementAsMap);
+    assertEquals("Multimap JsonElement doesn't match Map JsonElement", element, elementAsMap);
   }
 }
