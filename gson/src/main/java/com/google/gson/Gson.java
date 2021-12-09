@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
-
+import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.internal.ConstructorConstructor;
 import com.google.gson.internal.Excluder;
 import com.google.gson.internal.GsonBuildConfig;
@@ -724,6 +724,10 @@ public final class Gson {
    */
   @SuppressWarnings("unchecked")
   public void toJson(Object src, Type typeOfSrc, JsonWriter writer) throws JsonIOException {
+	 if(typeOfSrc.toString() == "ArrayListMultimap") {
+		  src = ((Map) src);
+		  typeOfSrc = new TypeToken<ArrayListMultimap<String, String>>() { }.getType();
+	  }
     TypeAdapter<?> adapter = getAdapter(TypeToken.get(typeOfSrc));
     boolean oldLenient = writer.isLenient();
     writer.setLenient(true);
