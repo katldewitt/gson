@@ -68,7 +68,7 @@ public final class $Gson$Types {
   public static GenericArrayType arrayOf(Type componentType) {
     return new GenericArrayTypeImpl(componentType);
   }
-
+  
   /**
    * Returns a type that represents an unknown type that extends {@code bound}.
    * For example, if {@code bound} is {@code CharSequence.class}, this returns
